@@ -1,0 +1,32 @@
+version: '3.9'
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql_sakila
+    environment:
+      MYSQL_DATABASE:saysakiladb 
+      MYSQL_USER: admin
+      MYSQL_ROOT_PASSWORD: 12345678 
+    ports:
+      - "3306:3306"
+    networks:
+      - ola_network
+
+  springboot:
+    build:
+      context: .  # Use the current directory as the build context
+    container_name: filmrental_app
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mysql
+    networks:
+      - ola_network
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://saysakiladb.cxbxe7ypeoyt.us-east-1.rds.amazonaws.com:3306/saysakiladb
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: 12345678
+
+networks:
+  ola_network:
+    driver: bridge
